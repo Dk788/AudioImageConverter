@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXHamburger?>
+<?import com.jfoenix.controls.JFXSpinner?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
+   <children>
+      <JFXButton fx:id="convertButton" buttonType="RAISED" defaultButton="true" layoutX="437.0" layoutY="650.0" onAction="#onClick" prefHeight="60.0" prefWidth="150.0" ripplerFill="#0d47a1" stylesheets="@WindowView.css" text="转换" textFill="WHITE">
+         <font>
+            <Font name="WenQuanYi Micro Hei" size="25.0" />
+         </font>
+      </JFXButton>
+      <JFXHamburger fx:id="hamburger" layoutX="16.0" layoutY="25.0" prefWidth="49.0" />
+      <JFXSpinner fx:id="convertSpinner" layoutX="482.0" layoutY="301.0" prefHeight="60.0" prefWidth="60.0" visible="false" />
+      <JFXButton fx:id="audioButton" buttonType="RAISED" layoutX="66.0" layoutY="62.0" prefHeight="538.0" prefWidth="398.0" />
+      <JFXButton fx:id="imageButton" buttonType="RAISED" layoutX="561.0" layoutY="62.0" prefHeight="538.0" prefWidth="398.0" />
+      <ImageView fx:id="audioImageView" layoutX="169.0" layoutY="235.0" mouseTransparent="true">
+         <image>
+            <Image url="@../../resources/audio.png" />
+         </image>
+         <effect>
+            <DropShadow color="#9e9e9e" height="30.0" radius="14.5" spread="0.25" width="30.0" />
+         </effect>
+      </ImageView>
+      <ImageView fx:id="imageImageView" layoutX="664.0" layoutY="235.0" mouseTransparent="true">
+         <image>
+            <Image url="@../../resources/image.png" />
+         </image>
+         <effect>
+            <DropShadow color="#9e9e9e" height="30.0" radius="14.5" spread="0.25" width="30.0" />
+         </effect>
+      </ImageView>
+   </children>
+</AnchorPane>
