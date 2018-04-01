@@ -1,8 +1,9 @@
 package application;
 
 import java.io.File;
+
+import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXSpinner;
 import javafx.event.ActionEvent;
@@ -13,17 +14,22 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class Controller {
 	
 	private static File audioFile = null;
 	private static File imageFile = null;
+	private static boolean userChoice = true; 
 	
 	@FXML
     private AnchorPane anchorPane;
 
     @FXML
     private JFXButton convertButton;
+    
+    @FXML
+    private JFXButton clearButton;
 
     @FXML
     private JFXHamburger hamburger;
@@ -47,10 +53,10 @@ public class Controller {
     private StackPane stackPane;
 
     @FXML
-    private JFXDialog dialog;
-
-    @FXML
     private JFXButton okButton;
+    
+    @FXML
+    private JFXButton cancelButton;
     
     @FXML
     private Label msgLable;
@@ -58,20 +64,37 @@ public class Controller {
     @FXML
     void onConvertBtnClick(ActionEvent event) {
     	if (audioFile == null && imageFile == null) {
-    		showDialog("请选择音频或图像文件");
+    		showDialog("请选择音频或图像文件", false);
 		} else {
 			convertSpinner.setVisible(true);
+			Converter converter = new Converter();
 			if (audioFile != null) {
-				// TODO: audioFile to image
-				showDialog(audioFile.toPath().toString());
+				File newImage = converter.audioToImage(audioFile);
+				showDialog(audioFile.toPath().toString(), false);	// Temp
 				convertSpinner.setVisible(false);
+				if (saveFile(newImage)) {
+					imageButton.setDisable(false);
+				}
 			}
 			if (imageFile != null) {
-				// TODO: imageFile to audio
-				showDialog(imageFile.toPath().toString());
+				File newAudio = converter.imageToAudio(imageFile);
+				showDialog(imageFile.toPath().toString(), false);	// Temp
 				convertSpinner.setVisible(false);
+				if (saveFile(newAudio)) {
+					audioButton.setDisable(false);
+				}
 			}
 		}
+    }
+    
+    @FXML
+    void onClearBtnClick(ActionEvent event) {
+    	userChoice = true;
+    	audioFile = null;
+    	imageFile = null;
+    	audioButton.setDisable(false);
+    	imageButton.setDisable(false);
+    	showDialog("清除完成", false);
     }
     
     @FXML
@@ -79,12 +102,13 @@ public class Controller {
     	FileChooser fileChooser = new FileChooser();
     	fileChooser.setTitle("选择音频文件");
     	fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+    	fileChooser.getExtensionFilters().addAll(
+    			new FileChooser.ExtensionFilter("音频文件", "*.mp3", "*.wav", "*.mid", "*.flac")
+                );
     	audioFile = fileChooser.showOpenDialog(audioButton.getScene().getWindow());
-//    	try {
-//			Files.copy(audio.toPath(), Paths.get("file/audio.bin"), StandardCopyOption.REPLACE_EXISTING);
-//		} catch (IOException e) {
-//			showDialog("保存时发生错误");
-//		}
+    	if (audioFile != null) {
+			imageButton.setDisable(true);
+		}
     }
     
     @FXML
@@ -92,39 +116,73 @@ public class Controller {
     	FileChooser fileChooser = new FileChooser();
     	fileChooser.setTitle("选择图像文件");
     	fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+    	fileChooser.getExtensionFilters().addAll(
+    			new FileChooser.ExtensionFilter("图像文件", "*.jpg", "*.png", "*.bmp")
+                );
     	imageFile = fileChooser.showOpenDialog(imageButton.getScene().getWindow());
-//    	try {
-//			Files.copy(image.toPath(), Paths.get("file/image.bin"), StandardCopyOption.REPLACE_EXISTING);
-//		} catch (IOException e) {
-//			showDialog("保存时发生错误");
-//		}
+    	if (imageFile != null) {
+			audioButton.setDisable(true);
+		}
     }
     
     @FXML
     void onHbgClick(MouseEvent event) {
-
+    	// TODO
     }
     
-    @FXML
-    void onOkBtnClick(ActionEvent event) {
-    	closeDialog();
-    }
-    
-    private void showDialog(String msg) {
+    private boolean showDialog(String msg, boolean isShowCancelBtn) {
+    	userChoice = true;
+    	if (isShowCancelBtn) {
+			cancelButton.setVisible(true);
+		} else {
+			cancelButton.setVisible(false);
+		}
     	stackPane.setVisible(true);
-		audioButton.setDisable(true);
-		imageButton.setDisable(true);
-		convertButton.setDisable(true);
-		msgLable.setText(msg);
-		dialog.setDialogContainer(stackPane);
-		dialog.show();
+    	msgLable.setText(msg);
+    	JFXAlert<?> alert = new JFXAlert<Object>((Stage)anchorPane.getScene().getWindow());
+    	alert.setContent(stackPane);
+    	okButton.setOnAction((action -> {
+            userChoice = true;
+		    stackPane.setVisible(false);
+		    alert.close();
+        }));
+    	cancelButton.setOnAction((action -> {
+            userChoice = false;
+		    stackPane.setVisible(false);
+		    alert.close();
+        }));
+    	alert.showAndWait();
+		return userChoice;
     }
     
-    private void closeDialog() {
-    	audioButton.setDisable(false);
-		imageButton.setDisable(false);
-		convertButton.setDisable(false);
-    	dialog.close();
-    	stackPane.setVisible(false);
+    // 选择路径保存 file，返回是否保存成功
+    private boolean saveFile(File file) {
+    	boolean isGiveUpSaving = false;
+    	boolean isSuccess = false;
+    	if (file == null) {
+    		showDialog("发生编码错误", false);
+    	} else {
+    		FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("保存文件");
+			fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+			
+			while (true) {
+				File targetFile = null;
+				targetFile = fileChooser.showSaveDialog(convertButton.getScene().getWindow());
+				if (targetFile == null) {	// 用户直接关闭了保存界面
+					isGiveUpSaving = showDialog("放弃保存？", true);
+					if (!isGiveUpSaving) {	// 如果仍要保存
+						continue;			// 重新打开保存界面
+					} else {				// 否则
+						break;				// 用户不想保存
+					}
+				} else {
+					// TODO: write file to targetFile, set isSuccess
+					showDialog("TODO: Saving to " + targetFile.toPath().toString(), false);
+					break;
+				}
+			}
+		}
+    	return (!isGiveUpSaving && isSuccess);	// 返回是否保存成功
 	}
 }
