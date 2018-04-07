@@ -3,7 +3,9 @@ package application;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -68,40 +70,55 @@ public class Controller {
 
     @FXML
     void onConvertBtnClick(ActionEvent event) {
-    	convertSpinner.setVisible(true);
     	if (audioFile == null && imageFile == null) {
-    		convertSpinner.setVisible(false);
     		showDialog("请选择音频或图像文件", false);
 		} else {
-			Converter converter = new Converter();
+			clearButton.setDisable(true);
+	    	convertSpinner.setVisible(true);
 			if (audioFile != null) {
-				File newImage = converter.audioToImage(audioFile);
-				showDialog(audioFile.toPath().toString(), false);	// Temp
-				convertSpinner.setVisible(false);
-				if (saveFile(newImage)) {
-					imageButton.setDisable(false);
-				}
+				// audioToImage
+				Thread thread = new Thread() {
+				    public void run(){
+				    	Converter converter = new Converter();
+						File newImage = converter.audioToImage(audioFile);
+						convertSpinner.setVisible(false);
+						Platform.runLater(() -> {
+							if (saveFile(newImage, "jpg")) {
+								imageButton.setDisable(false);
+							}
+							clearButton.setDisable(false);
+						});
+				    }
+				};
+				thread.start();
 			}
 			if (imageFile != null) {
-				File newAudio = converter.imageToAudio(imageFile);
-				showDialog(imageFile.toPath().toString(), false);	// Temp
-				convertSpinner.setVisible(false);
-				if (saveFile(newAudio)) {
-					audioButton.setDisable(false);
-				}
+				// imageToAudio
+				Thread thread = new Thread() {
+				    public void run(){
+				    	Converter converter = new Converter();
+						File newAudio = converter.imageToAudio(imageFile);
+						convertSpinner.setVisible(false);
+						Platform.runLater(() -> {
+							if (saveFile(newAudio, "wav")) {
+								audioButton.setDisable(false);
+							}
+							clearButton.setDisable(false);
+						});
+				    }
+				};
+				thread.start();	
 			}
 		}
     }
     
     @FXML
     void onClearBtnClick(ActionEvent event) {
-    	userChoice = true;
-    	audioFile = null;
-    	imageFile = null;
-    	audioButton.setDisable(false);
-    	imageButton.setDisable(false);
-    	titleLabel.setText("音频图像转换器");
-    	showDialog("清除完成", false);
+    	if (clean()) {
+    		showDialog("清除完成", false);
+		} else {
+			showDialog("清除时发生错误", false);
+		}
     }
     
     @FXML
@@ -140,7 +157,7 @@ public class Controller {
     }
     
     private boolean showDialog(String msg, boolean isShowCancelBtn) {
-    	userChoice = true;
+		userChoice = true;
     	if (isShowCancelBtn) {
 			cancelButton.setVisible(true);
 		} else {
@@ -165,7 +182,7 @@ public class Controller {
     }
     
     // 选择路径保存 file，返回是否保存成功
-    private boolean saveFile(File file) {
+    private boolean saveFile(File file, String Extension) {
     	boolean isGiveUpSaving = false;
     	boolean isSuccess = false;
     	if (file == null) {
@@ -174,6 +191,10 @@ public class Controller {
     		FileChooser fileChooser = new FileChooser();
 			fileChooser.setTitle("保存文件");
 			fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+			fileChooser.getExtensionFilters().addAll(
+	    			new FileChooser.ExtensionFilter(Extension + "文件", "*." + Extension)
+	                );
+			fileChooser.setInitialFileName("*." + Extension);
 			
 			while (true) {
 				File targetFile = null;
@@ -199,5 +220,23 @@ public class Controller {
 			}
 		}
     	return (!isGiveUpSaving && isSuccess);	// 返回是否保存成功
+	}
+    
+    public boolean clean() {
+		boolean result = true;
+		userChoice = true;
+    	audioFile = null;
+    	imageFile = null;
+    	try {
+			Files.deleteIfExists(Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "newAudio"));
+			Files.deleteIfExists(Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "newImage"));
+		} catch (IOException e) {
+			result = false;
+			e.printStackTrace();
+		}
+    	audioButton.setDisable(false);
+    	imageButton.setDisable(false);
+    	titleLabel.setText("音频图像转换器");
+		return result;
 	}
 }
