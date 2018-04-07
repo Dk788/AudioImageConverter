@@ -58,7 +58,7 @@
                               <DropShadow color="#9e9e9e" height="30.0" radius="14.5" spread="0.25" width="30.0" />
                            </effect>
                         </ImageView>
-                        <Label fx:id="msgLable" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="51.0" mouseTransparent="true" prefHeight="102.0" prefWidth="323.0" wrapText="true">
+                        <Label fx:id="msgLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="186.0" layoutY="51.0" mouseTransparent="true" prefHeight="102.0" prefWidth="323.0" wrapText="true">
                            <font>
                               <Font name="Noto Sans CJK SC Regular" size="25.0" />
                            </font>
@@ -79,5 +79,10 @@
             </SplitPane>
          </children>
       </StackPane>
+      <Label fx:id="titleLabel" layoutX="80.0" layoutY="5.0" mouseTransparent="true" prefHeight="60.0" prefWidth="937.0" text="音频图像转换器">
+         <font>
+            <Font name="Noto Sans CJK SC Regular" size="25.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>
