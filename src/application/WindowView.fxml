@@ -14,12 +14,12 @@
 
 <AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.Controller">
    <children>
-      <JFXButton fx:id="convertButton" buttonType="RAISED" defaultButton="true" layoutX="341.0" layoutY="648.0" onAction="#onConvertBtnClick" prefHeight="60.0" prefWidth="150.0" ripplerFill="#0d47a1" stylesheets="@WindowView.css" text="转换" textFill="WHITE">
+      <JFXButton fx:id="convertButton" buttonType="RAISED" defaultButton="true" layoutX="341.0" layoutY="648.0" onAction="#onConvertBtnClick" prefHeight="60.0" prefWidth="150.0" ripplerFill="#0d47a1" style="-fx-background-color: #2196F3; -fx-text-fill: #ffffff;" text="转换" textFill="WHITE">
          <font>
             <Font name="Noto Sans CJK SC Regular" size="25.0" />
          </font>
       </JFXButton>
-      <JFXButton fx:id="clearButton" buttonType="RAISED" defaultButton="true" layoutX="534.0" layoutY="648.0" onAction="#onClearBtnClick" prefHeight="60.0" prefWidth="150.0" ripplerFill="#0d47a1" stylesheets="@WindowView.css" text="清除" textFill="WHITE">
+      <JFXButton fx:id="clearButton" buttonType="RAISED" defaultButton="true" layoutX="534.0" layoutY="648.0" onAction="#onClearBtnClick" prefHeight="60.0" prefWidth="150.0" ripplerFill="#0d47a1" style="-fx-background-color: #2196F3; -fx-text-fill: #ffffff;" text="清除" textFill="WHITE">
          <font>
             <Font name="Noto Sans CJK SC Regular" size="25.0" />
          </font>

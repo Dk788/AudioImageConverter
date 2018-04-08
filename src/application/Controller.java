@@ -73,6 +73,7 @@ public class Controller {
     	if (audioFile == null && imageFile == null) {
     		showDialog("请选择音频或图像文件", false);
 		} else {
+			convertButton.setDisable(true);
 			clearButton.setDisable(true);
 	    	convertSpinner.setVisible(true);
 			if (audioFile != null) {
@@ -83,10 +84,12 @@ public class Controller {
 						File newImage = converter.audioToImage(audioFile);
 						convertSpinner.setVisible(false);
 						Platform.runLater(() -> {
-							if (saveFile(newImage, "jpg")) {
+							if (saveFile(newImage, "png")) {
 								imageButton.setDisable(false);
 							}
+							convertButton.setDisable(false);
 							clearButton.setDisable(false);
+							audioFile = null;
 						});
 				    }
 				};
@@ -103,7 +106,9 @@ public class Controller {
 							if (saveFile(newAudio, "wav")) {
 								audioButton.setDisable(false);
 							}
+							convertButton.setDisable(false);
 							clearButton.setDisable(false);
+							imageFile = null;
 						});
 				    }
 				};
@@ -127,7 +132,7 @@ public class Controller {
     	fileChooser.setTitle("选择音频文件");
     	fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
     	fileChooser.getExtensionFilters().addAll(
-    			new FileChooser.ExtensionFilter("音频文件", "*.mp3", "*.wav", "*.mid", "*.flac")
+    			new FileChooser.ExtensionFilter("音频文件", "*.wav", "*.flac")
                 );
     	audioFile = fileChooser.showOpenDialog(audioButton.getScene().getWindow());
     	if (audioFile != null) {
@@ -229,7 +234,7 @@ public class Controller {
     	imageFile = null;
     	try {
 			Files.deleteIfExists(Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "newAudio"));
-			Files.deleteIfExists(Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "newImage"));
+			Files.deleteIfExists(Paths.get(System.getProperty("java.io.tmpdir") + File.separator + "spectrogram.png"));
 		} catch (IOException e) {
 			result = false;
 			e.printStackTrace();

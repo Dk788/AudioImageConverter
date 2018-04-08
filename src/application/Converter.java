@@ -3,13 +3,20 @@ package application;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 public class Converter {
 	
 	public File audioToImage(File audio) {
-    	File newImage = audio;	// TODO: convert audioFile to image
+		try {
+			Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", "cd "
+					+ System.getProperty("java.io.tmpdir") + " && sox " + audio.getAbsolutePath() + " -n spectrogram" });
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		File newImage = new File(System.getProperty("java.io.tmpdir") + File.separator + "spectrogram.png");
 		return newImage;
 	}
     
