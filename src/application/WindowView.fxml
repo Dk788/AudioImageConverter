@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDrawer?>
 <?import com.jfoenix.controls.JFXHamburger?>
 <?import com.jfoenix.controls.JFXSpinner?>
 <?import javafx.scene.Cursor?>
@@ -88,5 +89,9 @@
             <Font name="Noto Sans CJK SC Regular" size="25.0" />
          </font>
       </Label>
+      <JFXDrawer fx:id="drawer" defaultDrawerSize="300.0" layoutY="68.0" mouseTransparent="true" overLayVisible="false" prefHeight="700.0" prefWidth="300.0">
+         <effect>
+            <DropShadow color="#9e9e9e" height="30.0" radius="14.5" spread="0.25" width="30.0" />
+         </effect></JFXDrawer>
    </children>
 </AnchorPane>

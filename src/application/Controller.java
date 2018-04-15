@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -25,8 +26,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.controls.JFXSpinner;
+import com.jfoenix.controls.events.JFXDrawerEvent;
 import com.jfoenix.transitions.hamburger.HamburgerBackArrowBasicTransition;
 
 public class Controller implements Initializable {
@@ -76,97 +79,123 @@ public class Controller implements Initializable {
     
     @FXML
     private Label titleLabel;
+    
+    @FXML
+    private JFXDrawer drawer;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		HamburgerBackArrowBasicTransition transition = new HamburgerBackArrowBasicTransition(hamburger);
-		transition.setRate(-1);
-		hamburger.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
-			transition.setRate(transition.getRate() * -1);
-			transition.play();
-			// TODO
-		});
-		
-		audioButton.setOnDragOver(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent event) {
-				if (event.getGestureSource() != audioButton && event.getDragboard().hasFiles()) {
+        try {
+            AnchorPane Pane = FXMLLoader.load(getClass().getResource("SidePanel.fxml"));
+            drawer.setSidePane(Pane);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        HamburgerBackArrowBasicTransition transition = new HamburgerBackArrowBasicTransition(hamburger);
+        transition.setRate(-1);
+        hamburger.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+            if (drawer.isShown()) {
+                drawer.close();
+                drawer.setMouseTransparent(true);
+            } else {
+                drawer.setMouseTransparent(false);
+                drawer.open();
+                transition.setRate(1);
+                transition.play();
+            }
+        });
+
+        // When using gestures to close the drawer
+        drawer.setOnDrawerClosing(new EventHandler<JFXDrawerEvent>() {
+            @Override
+            public void handle(JFXDrawerEvent event) {
+                drawer.setMouseTransparent(true);
+                transition.setRate(-1);
+                transition.play();
+            }
+        });
+
+        audioButton.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                if (event.getGestureSource() != audioButton && event.getDragboard().hasFiles()) {
                     event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 }
                 event.consume();
-			}
-		});
-		
-		audioButton.setOnDragDropped(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent event) {
-				boolean isSuccess = false;
+            }
+        });
+
+        audioButton.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                boolean isSuccess = false;
                 if (event.getGestureSource() != audioButton && event.getDragboard().hasFiles()) {
                     List<File> files = event.getDragboard().getFiles();
                     if (files.size() != 1 || files.get(0).isDirectory()) {
-                    	showDialog("请拖入至多一个文件", false);
-					} else {
-						audioFile = files.get(0);
-						boolean isValid = false;
-						List<String> validExtensions = Arrays.asList("wav", "flac");
-						for (String ve : validExtensions) {
-							if (audioFile.getName().endsWith(ve)) {
-								isValid = true;
-							}
-						}
-						if (isValid) {
-							titleLabel.setText("音频图像转换器" + " - " + audioFile.getName());
-							imageButton.setDisable(true);
-							isSuccess = true;
-						} else {
-							showDialog("请拖入音频文件，支持 wav、flac 格式", false);
-						}
-					}
+                        showDialog("请拖入至多一个文件", false);
+                    } else {
+                        audioFile = files.get(0);
+                        boolean isValid = false;
+                        List<String> validExtensions = Arrays.asList("wav", "flac");
+                        for (String ve : validExtensions) {
+                            if (audioFile.getName().endsWith(ve)) {
+                                isValid = true;
+                            }
+                        }
+                        if (isValid) {
+                            titleLabel.setText("音频图像转换器" + " - " + audioFile.getName());
+                            imageButton.setDisable(true);
+                            isSuccess = true;
+                        } else {
+                            showDialog("请拖入音频文件，支持 wav、flac 格式", false);
+                        }
+                    }
                 }
                 event.setDropCompleted(isSuccess);
                 event.consume();
-			}
+            }
         });
-		
-		imageButton.setOnDragOver(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent event) {
-				if (event.getGestureSource() != imageButton && event.getDragboard().hasFiles()) {
+
+        imageButton.setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                if (event.getGestureSource() != imageButton && event.getDragboard().hasFiles()) {
                     event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
                 }
                 event.consume();
-			}
-		});
-		
-		imageButton.setOnDragDropped(new EventHandler<DragEvent>() {
-			@Override
-			public void handle(DragEvent event) {
-				boolean isSuccess = false;
+            }
+        });
+
+        imageButton.setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                boolean isSuccess = false;
                 if (event.getGestureSource() != imageButton && event.getDragboard().hasFiles()) {
                     List<File> files = event.getDragboard().getFiles();
                     if (files.size() != 1 || files.get(0).isDirectory()) {
-                    	showDialog("请拖入至多一个文件", false);
-					} else {
-						imageFile = files.get(0);
-						boolean isValid = false;
-						List<String> validExtensions = Arrays.asList("jpg", "png", "bmp");
-						for (String ve : validExtensions) {
-							if (imageFile.getName().endsWith(ve)) {
-								isValid = true;
-							}
-						}
-						if (isValid) {
-							titleLabel.setText("音频图像转换器" + " - " + imageFile.getName());
-							audioButton.setDisable(true);
-							isSuccess = true;
-						} else {
-							showDialog("请拖入图像文件，支持 jpg、png、bmp 格式", false);
-						}
-					}
+                        showDialog("请拖入至多一个文件", false);
+                    } else {
+                        imageFile = files.get(0);
+                        boolean isValid = false;
+                        List<String> validExtensions = Arrays.asList("jpg", "png", "bmp");
+                        for (String ve : validExtensions) {
+                            if (imageFile.getName().endsWith(ve)) {
+                                isValid = true;
+                            }
+                        }
+                        if (isValid) {
+                            titleLabel.setText("音频图像转换器" + " - " + imageFile.getName());
+                            audioButton.setDisable(true);
+                            isSuccess = true;
+                        } else {
+                            showDialog("请拖入图像文件，支持 jpg、png、bmp 格式", false);
+                        }
+                    }
                 }
                 event.setDropCompleted(isSuccess);
                 event.consume();
-			}
+            }
         });
 	}
     

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXSlider?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.SidePanelController">
+	<children>
+		<VBox prefHeight="700.0" prefWidth="300.0">
+			<children>
+				<ImageView fitHeight="177.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
+					<image>
+						<Image url="@../../resources/material.png" />
+					</image>
+				</ImageView>
+            <Label prefHeight="31.0" prefWidth="300.0" text="设置音频输出长度 (s)">
+               <font>
+                  <Font name="Noto Sans CJK SC Regular" size="20.0" />
+               </font>
+            </Label>
+				<JFXSlider fx:id="timeSlider" majorTickUnit="2.0" max="9.0" min="1.0" minorTickCount="1" prefHeight="45.0" prefWidth="300.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="3.0" />
+				<JFXButton fx:id="aboutButton" onAction="#onAboutBtnClick" prefHeight="60.0" prefWidth="300.0" text="关于">
+					<font>
+						<Font name="Noto Sans CJK SC Regular" size="20.0" />
+					</font>
+				</JFXButton>
+				<JFXButton fx:id="exitButton" onAction="#onExitBtnClick" prefHeight="60.0" prefWidth="300.0" text="退出">
+					<font>
+						<Font name="Noto Sans CJK SC Regular" size="20.0" />
+					</font>
+				</JFXButton>
+			</children>
+		</VBox>
+	</children>
+</AnchorPane>
