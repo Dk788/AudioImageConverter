@@ -223,6 +223,7 @@ public class Controller implements Initializable {
 							convertButton.setDisable(false);
 							clearButton.setDisable(false);
 							audioButton.setDisable(false);
+							titleLabel.setText("音频图像转换器");
 							audioFile = null;
 						});
 				    }
@@ -243,6 +244,7 @@ public class Controller implements Initializable {
 							convertButton.setDisable(false);
 							clearButton.setDisable(false);
 							imageButton.setDisable(false);
+							titleLabel.setText("音频图像转换器");
 							imageFile = null;
 						});
 				    }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <ImageView fitHeight="150.0" fitWidth="150.0" layoutX="34.0" layoutY="33.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../resources/convert.png" />
+         </image>
+         <effect>
+            <DropShadow color="#9e9e9e" height="30.0" radius="14.5" spread="0.25" width="30.0" />
+         </effect>
+      </ImageView>
+      <Label alignment="CENTER" layoutX="210.0" layoutY="59.0" prefHeight="60.0" prefWidth="350.0" text="音频图像转换器" textAlignment="CENTER">
+         <font>
+            <Font name="Noto Sans CJK SC Regular" size="40.0" />
+         </font>
+      </Label>
+      <Label alignment="CENTER" layoutX="210.0" layoutY="108.0" prefHeight="60.0" prefWidth="350.0" text="Audio Image Converter" textAlignment="CENTER">
+         <font>
+            <Font name="Noto Sans CJK SC Regular" size="30.0" />
+         </font>
+      </Label>
+      <JFXTextArea editable="false" focusColor="#2196f3" layoutX="40.0" layoutY="207.0" prefHeight="150.0" prefWidth="520.0" text="一个可以将音频与图像相互转换的工具&#10;A tool for converting audio and images to each other&#10;AudioImageConverter is licensed under the GPLv3&#10;https://github.com/zyw271828/AudioImageConverter">
+         <font>
+            <Font name="Noto Sans CJK SC Regular" size="20.0" />
+         </font>
+      </JFXTextArea>
+   </children>
+</AnchorPane>

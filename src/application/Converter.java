@@ -9,6 +9,8 @@ import javax.imageio.ImageIO;
 
 public class Converter {
 	
+    public static int audioSeconds = 3;
+    
 	public File audioToImage(File audio) {
 		try {
 			Process p = Runtime.getRuntime().exec(new String[] { "bash", "-c", "cd "
@@ -25,7 +27,7 @@ public class Converter {
 		int maxFreq = 0;
 		int channels = 1;
 		int sampleRate = 44100;
-		float durationSeconds = (float) 3; // 输出长度
+		float durationSeconds = (float) audioSeconds;
 		ArrayList<Short> data = new ArrayList<Short>();
 		ArrayList<Integer> tmpData = new ArrayList<Integer>();
 		
@@ -45,8 +47,8 @@ public class Converter {
 				
 				for (int y = 0; y < height; y++) {
 					Color color = new Color(bufferedImage.getRGB(pixel_x, y));
-					int s = color.getRed() + color.getGreen() + color.getBlue();
-				    int volume = s * 100 / 765;
+					double s = color.getRed() * 0.2126 + color.getGreen() * 0.7152 + color.getBlue() * 0.0722;
+				    int volume = (int) s * 100 / 765;
 				    if (volume == 0)
 		                continue;
 				    int freq = C * (height - y + 1);
